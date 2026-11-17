@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Food Map - Annasetu{% endblock %}
+
+{% block content %}
+<section class="container">
+    <header class="page-header">
+        <div>
+            <h2>Food Map</h2>
+            <p>Available donations with pickup locations.</p>
+        </div>
+        <a href="{% url 'home' %}" class="btn btn-ghost btn-sm">Back</a>
+    </header>
+
+    <div class="card" style="padding:0; overflow:hidden;">
+        <div id="foodMap" style="height: 460px; width: 100%;"></div>
+    </div>
+
+    <div class="impact-row" style="margin-top:16px;">
+        <article class="impact-card">
+            <h3>Mapped Posts</h3>
+            <p id="mappedCount">{{ posts|length }}</p>
+        </article>
+    </div>
+</section>
+
+<link rel="stylesheet" href="{% static 'vendor/leaflet.css' %}">
+<script src="{% static 'vendor/leaflet.js' %}"></script>
+<script>
+(function () {
+    var map = L.map('foodMap').setView([23.8103, 90.4125], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var posts = [
+        {% for post in posts %}
+        {
+            lat: {{ post.latitude }},
+            lng: {{ post.longitude }},
+            title: "{{ post.title|escapejs }}",
+            donor: "{{ post.donor.full_name|escapejs }}",
+            qty: {{ post.quantity }},
+            category: "{{ post.get_category_display|escapejs }}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    posts.forEach(function (p) {
+        if (!p.lat || !p.lng) return;
+        var marker = L.marker([p.lat, p.lng]).addTo(map);
+        marker.bindPopup('<strong>' + p.title + '</strong><br>Qty: ' + p.qty + ' &middot; ' + p.category + '<br>Donor: ' + p.donor);
+    });
+
+    if (posts.length) {
+        var bounds = L.latLngBounds(posts.map(function (p) { return [p.lat, p.lng]; }));
+        map.fitBounds(bounds, { padding: [30, 30] });
+    }
+})();
+</script>
+{% endblock %}

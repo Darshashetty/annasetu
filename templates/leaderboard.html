@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Leaderboard - Annasetu{% endblock %}
+
+{% block content %}
+<section class="container">
+    <header class="page-header">
+        <div>
+            <h2>Community Leaderboard</h2>
+            <p>Top donors and volunteers by activity and trust score.</p>
+        </div>
+        <a href="{% url 'home' %}" class="btn btn-ghost btn-sm">Back</a>
+    </header>
+
+    <div class="tab-bar" data-tab-container>
+        <button class="tab-btn active" data-target="#tab-donor-activity" onclick="switchTab(this)">Donors &middot; Activity</button>
+        <button class="tab-btn" data-target="#tab-donor-trust" onclick="switchTab(this)">Donors &middot; Trust</button>
+        <button class="tab-btn" data-target="#tab-vol-activity" onclick="switchTab(this)">Volunteers &middot; Activity</button>
+        <button class="tab-btn" data-target="#tab-vol-trust" onclick="switchTab(this)">Volunteers &middot; Trust</button>
+    </div>
+
+    <div id="tab-donor-activity" class="tab-panel active">
+        <div class="card">
+            <table class="requests-table">
+                <thead><tr><th>#</th><th>Donor</th><th>Deliveries</th><th>Trust</th></tr></thead>
+                <tbody>
+                {% for row in donor_activity %}
+                    <tr><td>{{ forloop.counter }}</td><td>{{ row.user.full_name }}</td><td>{{ row.activity }}</td><td>{{ row.trust_score }}</td></tr>
+                {% empty %}<tr><td colspan="4">No donors yet.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="tab-donor-trust" class="tab-panel" style="display:none;">
+        <div class="card">
+            <table class="requests-table">
+                <thead><tr><th>#</th><th>Donor</th><th>Trust</th><th>Deliveries</th></tr></thead>
+                <tbody>
+                {% for row in donor_trust %}
+                    <tr><td>{{ forloop.counter }}</td><td>{{ row.user.full_name }}</td><td>{{ row.trust_score }}</td><td>{{ row.activity }}</td></tr>
+                {% empty %}<tr><td colspan="4">No donors yet.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="tab-vol-activity" class="tab-panel" style="display:none;">
+        <div class="card">
+            <table class="requests-table">
+                <thead><tr><th>#</th><th>Volunteer</th><th>Deliveries</th><th>Trust</th></tr></thead>
+                <tbody>
+                {% for row in volunteer_activity %}
+                    <tr><td>{{ forloop.counter }}</td><td>{{ row.user.full_name }}</td><td>{{ row.activity }}</td><td>{{ row.trust_score }}</td></tr>
+                {% empty %}<tr><td colspan="4">No volunteers yet.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="tab-vol-trust" class="tab-panel" style="display:none;">
+        <div class="card">
+            <table class="requests-table">
+                <thead><tr><th>#</th><th>Volunteer</th><th>Trust</th><th>Deliveries</th></tr></thead>
+                <tbody>
+                {% for row in volunteer_trust %}
+                    <tr><td>{{ forloop.counter }}</td><td>{{ row.user.full_name }}</td><td>{{ row.trust_score }}</td><td>{{ row.activity }}</td></tr>
+                {% empty %}<tr><td colspan="4">No volunteers yet.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

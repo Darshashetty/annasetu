@@ -1,0 +1,12 @@
+{
+  "appId": "com.sevaconnect.app",
+  "appName": "Annasetu",
+  "webDir": "www",
+  "server": {
+    "url": "http://127.0.0.1:18000",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
